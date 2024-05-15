@@ -1,0 +1,22 @@
+{
+    "title": "EKTU",
+    "back": "Back",
+    "wait": "Waiting",
+    "work": "In work",
+    "exit": "Exit",
+    "cancel": "Cancel",
+    "agree": "Agree",
+    "exitDescription": "Do you really want to leave?",
+    "ticket": "Ticket",
+    "notifyMe": "Notify me",
+    "print": "Print ticket",
+    "status": "Status",
+    "window": "Window",
+    "Created": "Ticket created.",
+    "Waiting": "Waiting. Watch on tablo.",
+    "Called": "Called by operator. Come to window.",
+    "IsLost": "Ticket is canceled. Client is lost.",
+    "WorkStarted": "Work started.",
+    "WorkEnded": "Work ended. Thank you for using our services.",
+    "Unworked": "Unused ticket." 
+}
