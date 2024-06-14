@@ -34,6 +34,7 @@ public class ServiceRepository : IServiceRepository
     public async Task<List<ServiceAggregate>> GetFlatServices(QueueId queueId, CancellationToken cancellationToken)
     {
         return await _dbContext.Services
+            .Include(s => s.WindowLinks)
             .Where(service => service.QueueId == queueId)
             .ToListAsync(cancellationToken);
     }

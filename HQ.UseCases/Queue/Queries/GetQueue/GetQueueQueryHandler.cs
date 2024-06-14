@@ -45,7 +45,8 @@ internal class GetQueueQueryHandler : IRequestHandler<GetQueueQuery, ErrorOr<Que
             queue.DefaultCulture.Name,
             terminals.ConvertAll(terminal => new QueueTerminalResponse(
                 terminal.Id.Value,
-                terminal.Name
+                terminal.Name,
+                terminal.ExternalPrinterId
             )),
             windows.ConvertAll(window => new QueueWindowResponse(
                 window.Id.Value,
@@ -57,7 +58,8 @@ internal class GetQueueQueryHandler : IRequestHandler<GetQueueQuery, ErrorOr<Que
                 service.RequestNumberCounter,
                 service.Literal?.Value,
                 service.ParentId?.Value,
-                new List<QueueServiceResponse>()
+                service.LinkedWindowIds,
+                Childs: new List<QueueServiceResponse>()
             )).CreateTree()
         );
     }

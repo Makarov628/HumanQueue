@@ -46,6 +46,7 @@ function App() {
           {/* <Route path="/admin" element={
           isAuth() && isAdmin() ? <Admin/> : <Login />
         } /> */}
+          <Route path="/admin" element={<Admin />} />
           <Route path="/terminal/:terminalId" element={<Terminal />} />
           <Route path="/tablo/:queueId" element={<Window />} />
           <Route path="/window/:windowId" element={<Operator />} />

@@ -269,14 +269,16 @@ public static class DbInitializer
         stringBuilder.AppendLine($"Терминал: https://hq.ektu.kz/terminal/{terminal.Id.Value}");
         stringBuilder.AppendLine($"Табло: https://hq.ektu.kz/tablo/{queue.Id.Value}");
 
-        var client = new HttpClient();
 
-        client.PostAsJsonAsync(
-            "https://api.telegram.org/bot<token>/sendMessage",
-            new {
-               chat_id = "<chatId>",
-               text = stringBuilder.ToString() 
-            }
-        ).Wait();
+        Console.WriteLine(stringBuilder.ToString());
+        // var client = new HttpClient();
+
+        // client.PostAsJsonAsync(
+        //     "https://api.telegram.org/bot<token>/sendMessage",
+        //     new {
+        //        chat_id = "<chatId>",
+        //        text = stringBuilder.ToString() 
+        //     }
+        // ).Wait();
     }
 }

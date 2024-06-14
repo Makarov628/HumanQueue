@@ -21,7 +21,8 @@ public record QueueResponse(
 
 public record QueueTerminalResponse(
     Guid Id,
-    string Name
+    string Name,
+    string? ExternalPrinterId
 );
 
 public record QueueWindowResponse(
@@ -35,6 +36,7 @@ public record QueueServiceResponse(
     int RequestNumberCounter,
     string? Literal,
     Guid? ParentId,
+    List<Guid> LinkedWindowsIds,
     List<QueueServiceResponse> Childs
 );
 
@@ -51,6 +53,7 @@ public static class ServiceResponseExtension
                 node.RequestNumberCounter,
                 node.Literal,
                 node.ParentId,
+                node.LinkedWindowsIds,
                 collection.CreateTree(node.Id)
             ));
         }

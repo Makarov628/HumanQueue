@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Content from '../common/Content';
-import { Box, Button, Container, CssBaseline, Divider, Stack } from '@mui/material';
+import { Box, Button, Container, CssBaseline, Divider, Fab, List, ListItem, ListItemButton, ListItemText, Stack, Toolbar, Typography } from '@mui/material';
 import { default as dayjs } from 'dayjs';
 import 'dayjs/locale/ru';
 import useToken from '../common/Token';
@@ -10,6 +10,10 @@ import AlertDialog from '../common/AlertDialog';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import TabPanel from './controls/TabPanel';
+import * as api from '../../api';
+import { useSnackbar } from 'notistack';
+import { Home, KeyboardArrowRight } from '@mui/icons-material';
+import QueuePanel from './controls/QueuePanel';
 
 dayjs.locale('ru')
 
@@ -19,80 +23,106 @@ export interface IAdmin {
 
 function Admin({ ...props }: IAdmin) {
 
-    const { t, i18n } = useTranslation();
-    const { token, removeToken, setToken } = useToken();
+  const { t, i18n } = useTranslation();
+  const { token, removeToken, setToken } = useToken();
 
-    const [exitDialog, setExitDialog] = React.useState<boolean>(false);
-    const [tab, setTab] = React.useState<number>(0);
+  const [exitDialog, setExitDialog] = React.useState<boolean>(false);
+  const [tab, setTab] = React.useState<number>(0);
+  const [date, setDate] = React.useState<number>(Date.now());
+  const { enqueueSnackbar } = useSnackbar();
+  const [queues, setQueues] = useState<api.QueuesResponse[]>([])
+  const [selectedQueueId, setSelectedQueueId] = useState<string>("")
 
-    React.useEffect(() => {
 
-    }, [])
 
-    const tabChange = (event: React.SyntheticEvent, newValue: number) => {
-      setTab(newValue);
-    };
+  const getQueueList = () => {
+    const queueApi = new api.QueueApi();
 
-    const Logout = () => {
-        removeToken();
-        window.location.reload();
-    }
+    queueApi.apiQueueGet().then((queues) => {
+      setQueues(queues)
+    }).catch((err) => {
+      enqueueSnackbar("Не удалось загрузить список очередей", { variant: 'error' });
+    })
+  };
 
-    return (
-        <Content>
-            <CssBaseline />
-            <Stack spacing={0} sx={{ height: '100vh' }}>
-                <Head>
-                    <Button variant='outlined' onClick={() => setExitDialog(true)}>{t('exit')}</Button>
-                </Head>
-                <Divider />
-                <Box sx={{ width: '100%', borderBottom: 'solid 1px #C1C1C1', display: 'flex', justifyContent: 'center' }}>
-                        <Tabs
-                          centered
-                          value={tab}
-                          onChange={tabChange}
-                          variant="scrollable"
-                          scrollButtons="auto"
-                          sx={{
-                            [`& .${tabsClasses.scrollButtons}`]: {
-                              '&.Mui-disabled': { opacity: 0.3 },
-                            },
-                          }}
-                        >
-                          <Tab label="Услуги" />
-                          <Tab label="Окна" />
-                          <Tab label="Пользователи" />
-                          <Tab label="Конфигурации" />
-                        </Tabs>
-                      </Box>
-                <div style={{ height: '100vh', overflowY: 'auto' }}>
-                    <Container maxWidth="xl">                    
-                        <Box sx={{ minHeight: 'calc(100vh - 150px)', padding: '24px', justifyContent: 'center', display: 'flex' }} >
-                          <TabPanel value={tab} index={0}>
+  const selectQueue = (id: string) => {
+    if (id == selectedQueueId)
+      return setSelectedQueueId("");
 
-                          </TabPanel>
-                          <TabPanel value={tab} index={1}>
+    setSelectedQueueId(id);
+  }
 
-                          </TabPanel>
-                          <TabPanel value={tab} index={2}>
+  React.useEffect(() => {
+    getQueueList()
+  }, [])
 
-                          </TabPanel>
-                          <TabPanel value={tab} index={3}>
 
-                          </TabPanel>
-                        </Box>
-                    </Container>
-                </div>
-            </Stack>
-            <AlertDialog 
-                No={setExitDialog} 
-                Yes={Logout} 
-                open={exitDialog} 
-                title={t('exit')} 
-                description={t('exitDescription')} 
-                agreeText={t('exit')}/>
-        </Content>
-    );
+  React.useEffect(() => {
+    setTimeout(() => {
+      setDate(Date.now());
+    }, 1000);
+  }, [date])
+
+  return (
+    <Content>
+      <CssBaseline />
+      <Stack spacing={0} sx={{ height: '100vh' }}>
+        <Head>
+          <Typography variant="h5" sx={{ color: 'rgba(0, 0, 0, 0.54)' }}>
+            {dayjs(date).format('DD.MM.YYYY HH:mm:ss')}
+          </Typography>
+        </Head>
+        <Divider />
+        <Stack direction="row">
+          <Box sx={{ width: '30%', height: "92vh", borderBottom: 'solid 1px #C1C1C1', justifyContent: 'center' }}>
+            <Toolbar
+              sx={{
+                pl: { sm: 2 },
+                pr: { xs: 1, sm: 1 },
+                textAlign: 'center',
+                display: "flex"
+              }}
+            >
+              <Typography
+                sx={{ flex: '1 1 100%', fontSize: '32px !important', fontWeight: '200' }}
+                variant="h6"
+                id="tableTitle"
+                component="div"
+              >
+
+                {"Очереди"}
+              </Typography>
+
+              <Button variant='outlined' style={{ }}>+</Button>
+            </Toolbar>
+
+
+            <List>
+              {
+                queues.map((queue) =>
+                  <ListItem selected={selectedQueueId == queue.id}>
+                    <ListItemButton onClick={() => selectQueue(queue.id!)}>
+                      <ListItemText primary={queue.name} />
+                      <KeyboardArrowRight />
+                    </ListItemButton>
+                  </ListItem>
+                )
+              }
+            </List>
+          </Box>
+          <Divider orientation="vertical" flexItem />
+          <QueuePanel queueId={selectedQueueId}/>
+        </Stack>
+      </Stack>
+      {/* <AlertDialog
+        No={setExitDialog}
+        Yes={Logout}
+        open={exitDialog}
+        title={t('exit')}
+        description={t('exitDescription')}
+        agreeText={t('exit')} /> */}
+    </Content>
+  );
 }
 
 export default Admin;

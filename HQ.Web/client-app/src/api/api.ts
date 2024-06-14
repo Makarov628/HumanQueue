@@ -467,6 +467,12 @@ export interface QueueServiceResponse {
     parentId?: string;
     /**
      * 
+     * @type {string[]}
+     * @memberof QueueServiceResponse
+     */
+    linkedWindowsIds: string[];
+    /**
+     * 
      * @type {Array<QueueServiceResponse>}
      * @memberof QueueServiceResponse
      */

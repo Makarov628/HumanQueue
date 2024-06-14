@@ -25,6 +25,8 @@ public sealed class ServiceAggregate : AggregateRoot<ServiceId>
     public IReadOnlyList<Request> Requests => _requests.AsReadOnly();
     public IReadOnlyList<WindowLink> WindowLinks => _windowLinks.AsReadOnly();
 
+    public List<Guid> LinkedWindowIds => _windowLinks.Select(link => link.WindowId.Value).ToList();
+
     private ServiceAggregate(
         ServiceId serviceId,
         QueueId queueId,
