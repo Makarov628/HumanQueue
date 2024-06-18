@@ -412,6 +412,12 @@ export interface QueueResponse {
     defaultCulture?: string;
     /**
      * 
+     * @type {Array<AvailableCultureResponse>}
+     * @memberof QueueResponse
+     */
+    availableCultures?: Array<AvailableCultureResponse>;
+    /**
+     * 
      * @type {Array<QueueTerminalResponse>}
      * @memberof QueueResponse
      */
@@ -465,6 +471,12 @@ export interface QueueServiceResponse {
      * @memberof QueueServiceResponse
      */
     parentId?: string;
+    /**
+     * 
+     * @type {Array<AvailableCultureResponse>}
+     * @memberof QueueResponse
+     */
+    names?: Array<CultureString>;
     /**
      * 
      * @type {string[]}
@@ -839,6 +851,26 @@ export interface TerminalResponse {
      * @memberof TerminalResponse
      */
     services?: Array<TerminalServiceResponse>;
+}
+
+/**
+ * 
+ * @export
+ * @interface TerminalPrinterResponse
+ */
+export interface TerminalPrinterResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof TerminalResponse
+     */
+    id?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TerminalResponse
+     */
+    name?: string;
 }
 /**
  * 

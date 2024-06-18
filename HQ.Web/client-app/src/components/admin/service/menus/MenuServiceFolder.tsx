@@ -9,19 +9,26 @@ interface MenuServiceFolderProps {
   onClose: () => void;
 }
 
-export type MenuServiceFolderOnItemClicked = (itemType: 'add-service' | 'rename' | 'delete') => void
+export type MenuServiceFolderItemType = 'add-service' | 'rename' | 'delete'
+export type MenuServiceFolderOnItemClicked = (itemType: MenuServiceFolderItemType) => void
 
 const MenuServiceFolder: FC<MenuServiceFolderProps> = ({ open, anchorEl, onItemClicked, onClose }) => {
   return (
-    <Menu anchorEl={anchorEl} open={open && Boolean(anchorEl)} onClose={onClose}>
+    <Menu
+      anchorEl={anchorEl}
+      open={Boolean(anchorEl) && open}
+      onClose={onClose}
+      transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+      anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+    >
       <MenuItem onClick={() => onItemClicked('add-service')}>
-        <Add /> Добавить услугу
+        <Add color='primary' style={{ marginRight: "8px" }}/> Добавить услугу
       </MenuItem>
       <MenuItem onClick={() => onItemClicked('rename')}>
-        <Edit /> Переименовать
+        <Edit color='primary' style={{ marginRight: "8px" }}/> Переименовать
       </MenuItem>
       <MenuItem onClick={() => onItemClicked('delete')}>
-        <Delete /> Удалить
+        <Delete color='error' style={{ marginRight: "8px" }}/> Удалить
       </MenuItem>
     </Menu>
   );

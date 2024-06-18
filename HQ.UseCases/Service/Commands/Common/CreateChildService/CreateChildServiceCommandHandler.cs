@@ -56,7 +56,7 @@ internal class CreateChildServiceCommandHandler : IRequestHandler<CreateChildSer
 
 
         // Проверяем можно ли создать дочернюю услугу и сохраняем
-        ErrorOr<ServiceAggregate> childService = parentService.CreateChild(serviceName.Value, null);
+        ErrorOr<ServiceAggregate> childService = parentService.CreateChild(serviceName.Value, literal.Value);
         if (childService.IsError)
             return childService.Errors;
 

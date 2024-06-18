@@ -141,6 +141,13 @@ public class ServiceConfigurations : IEntityTypeConfiguration<ServiceAggregate>
                 .ValueGeneratedNever()
                 .HasConversion(
                     id => id.Value,
+                    value => WindowLinkId.Create(value)
+                );
+
+            wlb.Property(wl => wl.ServiceId)
+                .ValueGeneratedNever()
+                .HasConversion(
+                    id => id.Value,
                     value => ServiceId.Create(value)
                 );
 

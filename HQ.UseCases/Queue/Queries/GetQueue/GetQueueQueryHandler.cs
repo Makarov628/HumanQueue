@@ -1,5 +1,6 @@
 using ErrorOr;
 using HQ.Application.Persistence;
+using HQ.Domain.Common.ValueObjects;
 using HQ.Domain.QueueAggregate;
 using HQ.Domain.QueueAggregate.ValueObjects;
 using HQ.Domain.ServiceAggregate;
@@ -43,6 +44,10 @@ internal class GetQueueQueryHandler : IRequestHandler<GetQueueQuery, ErrorOr<Que
             queue.Id.Value,
             queue.Name,
             queue.DefaultCulture.Name,
+            AvailableCultures: AvailableCultures.GetCultures().Select(culture => new QueueAvailableCultureResponse(
+                culture.Name,
+                culture.LanguageName
+            )).ToList(),
             terminals.ConvertAll(terminal => new QueueTerminalResponse(
                 terminal.Id.Value,
                 terminal.Name,
@@ -58,6 +63,7 @@ internal class GetQueueQueryHandler : IRequestHandler<GetQueueQuery, ErrorOr<Que
                 service.RequestNumberCounter,
                 service.Literal?.Value,
                 service.ParentId?.Value,
+                service.Name.StringParts,
                 service.LinkedWindowIds,
                 Childs: new List<QueueServiceResponse>()
             )).CreateTree()

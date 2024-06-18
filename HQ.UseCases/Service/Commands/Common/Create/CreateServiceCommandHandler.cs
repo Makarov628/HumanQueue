@@ -57,7 +57,7 @@ internal class CreateServiceCommandHandler : IRequestHandler<CreateServiceComman
             return Error.Validation(description: "Услуга с таким литералом уже существует.");
 
         // Сохраняем услугу
-        ServiceAggregate service = ServiceAggregate.Create(queueId, serviceName.Value, null);
+        ServiceAggregate service = ServiceAggregate.Create(queueId, serviceName.Value, literal.Value);
         await _serviceRepository.Add(service, cancellationToken);
         return Result.Created;
     }

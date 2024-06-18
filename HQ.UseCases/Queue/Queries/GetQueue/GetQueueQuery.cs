@@ -1,6 +1,7 @@
 
 
 using ErrorOr;
+using HQ.Domain.Common.ValueObjects;
 using MediatR;
 
 namespace HQ.UseCases.Queue.Queries.GetQueue;
@@ -14,9 +15,15 @@ public record QueueResponse(
     Guid Id,
     string Name,
     string DefaultCulture,
+    List<QueueAvailableCultureResponse> AvailableCultures,
     List<QueueTerminalResponse> Terminals,
     List<QueueWindowResponse> Windows,
     List<QueueServiceResponse> Services
+);
+
+public record QueueAvailableCultureResponse(
+    string Culture,
+    string LanguageName
 );
 
 public record QueueTerminalResponse(
@@ -36,6 +43,7 @@ public record QueueServiceResponse(
     int RequestNumberCounter,
     string? Literal,
     Guid? ParentId,
+    List<CultureString> Names,
     List<Guid> LinkedWindowsIds,
     List<QueueServiceResponse> Childs
 );
@@ -53,6 +61,7 @@ public static class ServiceResponseExtension
                 node.RequestNumberCounter,
                 node.Literal,
                 node.ParentId,
+                node.Names,
                 node.LinkedWindowsIds,
                 collection.CreateTree(node.Id)
             ));

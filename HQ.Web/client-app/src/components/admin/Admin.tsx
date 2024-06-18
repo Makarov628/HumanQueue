@@ -1,19 +1,16 @@
+import 'dayjs/locale/ru';
 import React, { useState } from 'react';
 import Content from '../common/Content';
-import { Box, Button, Container, CssBaseline, Divider, Fab, List, ListItem, ListItemButton, ListItemText, Stack, Toolbar, Typography } from '@mui/material';
+import { Box, Button, CssBaseline, Divider, Fab, List, ListItem, ListItemButton, ListItemText, Stack, Toolbar, Typography } from '@mui/material';
 import { default as dayjs } from 'dayjs';
-import 'dayjs/locale/ru';
 import useToken from '../common/Token';
 import Head from '../common/Head';
 import { useTranslation } from 'react-i18next';
-import AlertDialog from '../common/AlertDialog';
-import Tabs, { tabsClasses } from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import TabPanel from './controls/TabPanel';
 import * as api from '../../api';
 import { useSnackbar } from 'notistack';
 import { Home, KeyboardArrowRight } from '@mui/icons-material';
-import QueuePanel from './controls/QueuePanel';
+import QueuePanel from './queue/QueuePanel';
+import Queue from './queue/Queue';
 
 dayjs.locale('ru')
 
@@ -31,7 +28,7 @@ function Admin({ ...props }: IAdmin) {
   const [date, setDate] = React.useState<number>(Date.now());
   const { enqueueSnackbar } = useSnackbar();
   const [queues, setQueues] = useState<api.QueuesResponse[]>([])
-  const [selectedQueueId, setSelectedQueueId] = useState<string>("")
+
 
 
 
@@ -39,18 +36,12 @@ function Admin({ ...props }: IAdmin) {
     const queueApi = new api.QueueApi();
 
     queueApi.apiQueueGet().then((queues) => {
-      setQueues(queues)
+      setQueues([...queues])
     }).catch((err) => {
       enqueueSnackbar("Не удалось загрузить список очередей", { variant: 'error' });
     })
   };
 
-  const selectQueue = (id: string) => {
-    if (id == selectedQueueId)
-      return setSelectedQueueId("");
-
-    setSelectedQueueId(id);
-  }
 
   React.useEffect(() => {
     getQueueList()
@@ -74,44 +65,7 @@ function Admin({ ...props }: IAdmin) {
         </Head>
         <Divider />
         <Stack direction="row">
-          <Box sx={{ width: '30%', height: "92vh", borderBottom: 'solid 1px #C1C1C1', justifyContent: 'center' }}>
-            <Toolbar
-              sx={{
-                pl: { sm: 2 },
-                pr: { xs: 1, sm: 1 },
-                textAlign: 'center',
-                display: "flex"
-              }}
-            >
-              <Typography
-                sx={{ flex: '1 1 100%', fontSize: '32px !important', fontWeight: '200' }}
-                variant="h6"
-                id="tableTitle"
-                component="div"
-              >
-
-                {"Очереди"}
-              </Typography>
-
-              <Button variant='outlined' style={{ }}>+</Button>
-            </Toolbar>
-
-
-            <List>
-              {
-                queues.map((queue) =>
-                  <ListItem selected={selectedQueueId == queue.id}>
-                    <ListItemButton onClick={() => selectQueue(queue.id!)}>
-                      <ListItemText primary={queue.name} />
-                      <KeyboardArrowRight />
-                    </ListItemButton>
-                  </ListItem>
-                )
-              }
-            </List>
-          </Box>
-          <Divider orientation="vertical" flexItem />
-          <QueuePanel queueId={selectedQueueId}/>
+          <Queue queues={queues} onUpdate={() => { getQueueList() }}/>
         </Stack>
       </Stack>
       {/* <AlertDialog
