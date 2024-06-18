@@ -1,0 +1,30 @@
+stages:
+    - build
+    - k8s
+build-docker:
+  stage: build
+  image: docker:stable
+  tags:
+    - gitlab-docker
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u DeployHQ -p ${ACCESS_TOKEN} gitlab.ektu.kz:5050
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID .
+    - docker push $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID
+  when: always
+deploy-k8s:
+  stage: k8s
+  variables:
+    KUBE_CONTEXT: kubernetes/gitlab-agent:km-agent
+  image:
+    name: gitlab.ektu.kz:5050/kubernetes/gitlab-agent:latest
+    entrypoint: ['']
+  tags:
+    - k8s-main-runner
+  before_script:
+    - sed -i -e "s,<IMAGE>,$CI_REGISTRY_IMAGE:$CI_PIPELINE_ID,g" ./hq.yaml
+  script:
+    - kubectl apply -f ./hq.yaml -n default
+  when: always
