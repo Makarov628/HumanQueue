@@ -78,7 +78,7 @@ public class NetworkPrinterProvider : IExternalPrinterProvider
                     emitter.PrintLine(""),
                     PrepareForPrint($"Дата и время выдачи талона"),
                     emitter.PrintLine(""),
-                    PrepareForPrint($"{request.CreatedDate}"),
+                    PrepareForPrint($"{request.CreatedDate.AddHours(5)}"),
                     emitter.PrintLine(""),
                     emitter.PrintLine(""),
                     emitter.PrintLine(""),
